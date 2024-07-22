@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const DeviceTest = () => {
   const [testStatus, setTestStatus] = useState({
@@ -15,6 +15,7 @@ const DeviceTest = () => {
   const [cameraDevices, setCameraDevices] = useState([]);
   const videoRef = useRef(null);
   const audioPlaybackRef = useRef(null);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     const getCameraDevices = async () => {
@@ -32,7 +33,17 @@ const DeviceTest = () => {
   const testSpeaker = async () => {
     setIsTesting(true);
     setTestStatus(prev => ({ ...prev, speaker: 'Testing...' }));
-    const audio = new Audio('audio_test.mp3');
+    
+    const audio = new Audio('/audio_test.mp3'); 
+    audioRef.current = audio;
+
+    audio.onerror = () => {
+      console.error('Error loading audio file');
+      setTestStatus(prev => ({ ...prev, speaker: 'Failed to load audio' }));
+      setIsTesting(false);
+      if (autoTest) testCamera(); // Proceed to next test in auto mode
+    };
+    
     audio.play();
     audio.onended = () => {
       setTestStatus(prev => ({ ...prev, speaker: 'Completed' }));
@@ -42,6 +53,10 @@ const DeviceTest = () => {
   };
 
   const skipSpeaker = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     setTestStatus(prev => ({ ...prev, speaker: 'Skipped' }));
     setIsTesting(false);
     if (autoTest) testCamera(); // Proceed to next test in auto mode
@@ -124,18 +139,6 @@ const DeviceTest = () => {
     }
   };
 
-  const handleReplaySpeaker = () => {
-    testSpeaker();
-  };
-
-  const handleReplayMicrophone = () => {
-    if (audioUrl) {
-      audioPlaybackRef.current.play();
-    } else {
-      testMicrophone();
-    }
-  };
-
   const handleSkipMicrophone = () => {
     setTestStatus(prev => ({ ...prev, microphone: 'Skipped' }));
     setIsTesting(false);
@@ -168,13 +171,6 @@ const DeviceTest = () => {
           Test Speaker
         </button>
         <button
-          className="btn btn-secondary mr-2"
-          onClick={handleReplaySpeaker}
-          disabled={isTesting || testStatus.speaker === 'Not Started'}
-        >
-          Replay Speaker
-        </button>
-        <button
           className="btn btn-secondary"
           onClick={skipSpeaker}
           disabled={!isTesting || testStatus.speaker !== 'Testing...'}
@@ -205,13 +201,6 @@ const DeviceTest = () => {
           disabled={isTesting}
         >
           Test Microphone
-        </button>
-        <button
-          className="btn btn-secondary mr-2"
-          onClick={handleReplayMicrophone}
-          disabled={isTesting || testStatus.microphone === 'Not Started'}
-        >
-          Replay Microphone
         </button>
         <button
           className="btn btn-secondary"

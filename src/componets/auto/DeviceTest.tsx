@@ -47,8 +47,11 @@ const DeviceTest = () => {
     audio.play();
     audio.onended = () => {
       setTestStatus(prev => ({ ...prev, speaker: 'Completed' }));
-      setIsTesting(false);
-      if (autoTest) testCamera(); // Proceed to next test in auto mode
+      if (autoTest) {
+        testCamera(); // Proceed to next test in auto mode
+      } else {
+        setIsTesting(false);
+      }
     };
   };
 
@@ -58,8 +61,11 @@ const DeviceTest = () => {
       audioRef.current = null;
     }
     setTestStatus(prev => ({ ...prev, speaker: 'Skipped' }));
-    setIsTesting(false);
-    if (autoTest) testCamera(); // Proceed to next test in auto mode
+    if (autoTest) {
+      testCamera(); // Proceed to next test in auto mode
+    } else {
+      setIsTesting(false);
+    }
   };
 
   const testCamera = async () => {
@@ -83,8 +89,11 @@ const DeviceTest = () => {
       console.error('Camera access error:', error);
       setTestStatus(prev => ({ ...prev, camera: 'Failed' }));
     }
-    setIsTesting(false);
-    if (autoTest) testMicrophone(); // Proceed to next test in auto mode
+    if (autoTest) {
+      testMicrophone(); // Proceed to next test in auto mode
+    } else {
+      setIsTesting(false);
+    }
   };
 
   const switchCamera = async () => {
@@ -122,7 +131,9 @@ const DeviceTest = () => {
         audioPlaybackRef.current.onended = () => {
           setTestStatus(prev => ({ ...prev, microphone: 'Completed' }));
           setIsTesting(false);
-          if (autoTest) setAutoTest(false); // End auto mode
+          if (autoTest) {
+            setAutoTest(false); // End auto mode
+          }
         };
       };
 
@@ -134,15 +145,21 @@ const DeviceTest = () => {
     } catch (error) {
       console.error('Microphone access error:', error);
       setTestStatus(prev => ({ ...prev, microphone: 'Failed' }));
-      setIsTesting(false);
-      if (autoTest) setAutoTest(false); // End auto mode
+      if (autoTest) {
+        setAutoTest(false); // End auto mode
+      } else {
+        setIsTesting(false);
+      }
     }
   };
 
   const handleSkipMicrophone = () => {
     setTestStatus(prev => ({ ...prev, microphone: 'Skipped' }));
-    setIsTesting(false);
-    if (autoTest) setAutoTest(false); // End auto mode
+    if (autoTest) {
+      setAutoTest(false); // End auto mode
+    } else {
+      setIsTesting(false);
+    }
   };
 
   const startAutoTest = () => {
@@ -194,7 +211,7 @@ const DeviceTest = () => {
           Switch Camera
         </button>
       </div>
-      <div className="mb-4">
+      <div className="mb-5">
         <button
           className="btn btn-primary mr-2"
           onClick={testMicrophone}

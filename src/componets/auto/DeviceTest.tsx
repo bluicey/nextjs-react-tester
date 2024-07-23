@@ -35,6 +35,7 @@ const DeviceTest = () => {
     setTestStatus(prev => ({ ...prev, speaker: 'Testing...' }));
 
     const audio = new Audio('/audio_test.mp3'); 
+    const audio = new Audio('/audio_test.mp3');
     audioRef.current = audio;
 
     audio.onerror = () => {

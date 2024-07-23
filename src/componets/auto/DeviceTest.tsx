@@ -10,12 +10,12 @@ const DeviceTest = () => {
   });
   const [isTesting, setIsTesting] = useState(false);
   const [autoTest, setAutoTest] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [currentCamera, setCurrentCamera] = useState(0);
-  const [cameraDevices, setCameraDevices] = useState([]);
-  const videoRef = useRef(null);
-  const audioPlaybackRef = useRef(null);
-  const audioRef = useRef(null);
+  const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const audioPlaybackRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const getCameraDevices = async () => {
@@ -33,7 +33,7 @@ const DeviceTest = () => {
   const testSpeaker = async () => {
     setIsTesting(true);
     setTestStatus(prev => ({ ...prev, speaker: 'Testing...' }));
-    
+
     const audio = new Audio('/audio_test.mp3'); 
     audioRef.current = audio;
 
@@ -43,7 +43,7 @@ const DeviceTest = () => {
       setIsTesting(false);
       if (autoTest) testCamera(); // Proceed to next test in auto mode
     };
-    
+
     audio.play();
     audio.onended = () => {
       setTestStatus(prev => ({ ...prev, speaker: 'Completed' }));
@@ -75,7 +75,9 @@ const DeviceTest = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = cameraStream;
         videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play();
+          if (videoRef.current) {
+            videoRef.current.play();
+          }
         };
         setTestStatus(prev => ({ ...prev, camera: 'Completed' }));
       }
@@ -97,8 +99,8 @@ const DeviceTest = () => {
   const testMicrophone = async () => {
     setIsTesting(true);
     setTestStatus(prev => ({ ...prev, microphone: 'Testing...' }));
-    let mediaRecorder;
-    let audioChunks = [];
+    let mediaRecorder: MediaRecorder;
+    let audioChunks: Blob[] = [];
 
     try {
       const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -116,14 +118,18 @@ const DeviceTest = () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioUrl(audioUrl);
-        audioPlaybackRef.current.src = audioUrl;
-        audioPlaybackRef.current.play();
+        if (audioPlaybackRef.current) {
+          audioPlaybackRef.current.src = audioUrl;
+          audioPlaybackRef.current.play();
+        }
         setTestStatus(prev => ({ ...prev, microphone: 'Recording Stopped, Playing Back...' }));
-        audioPlaybackRef.current.onended = () => {
-          setTestStatus(prev => ({ ...prev, microphone: 'Completed' }));
-          setIsTesting(false);
-          if (autoTest) setAutoTest(false); // End auto mode
-        };
+        if (audioPlaybackRef.current) {
+          audioPlaybackRef.current.onended = () => {
+            setTestStatus(prev => ({ ...prev, microphone: 'Completed' }));
+            setIsTesting(false);
+            if (autoTest) setAutoTest(false); // End auto mode
+          };
+        }
       };
 
       mediaRecorder.start();

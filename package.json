@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
+    "konva": "^9.3.14",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-konva": "^18.2.10",
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {

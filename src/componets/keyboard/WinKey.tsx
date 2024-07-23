@@ -92,12 +92,7 @@ const rows = [
     { key: 'ContextMenu', label: 'Menu' },
     { key: 'ControlRight', label: 'Ctrl' },
   ],
-  [
-    { key: 'ArrowLeft', label: '◄' },
-    { key: 'ArrowUp', label: '▲' },
-    { key: 'ArrowDown', label: '▼' },
-    { key: 'ArrowRight', label: '►' },
-  ],
+
 ];
 
 const numpad = [
@@ -128,6 +123,12 @@ const numpad = [
     { key: 'Numpad0', label: '0', className: 'col-span-2' },
     { key: 'NumpadDecimal', label: '.' },
   ],
+];
+const arrowKeys = [
+  { key: 'ArrowUp', label: '▲' },
+  { key: 'ArrowLeft', label: '◄' },
+  { key: 'ArrowDown', label: '▼' },
+  { key: 'ArrowRight', label: '►' },
 ];
 
 const ignKeys = [
@@ -172,39 +173,61 @@ const WinKey: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center mt-10 space-y-2">
-      {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex space-x-1">
-          {row.map((key, keyIndex) => (
-            <div
-              key={keyIndex}
-              data-key={key.key}
-              onClick={() => handleClick(key.key)}
-              className={`flex justify-center items-center w-12 h-12 m-1 border rounded cursor-pointer ${
-                activeKeys.has(key.key) ? 'bg-blue-500' : ''
-              } ${key.className ? key.className : ''}`}
-            >
-              {key.label}
+      <div className="flex space-x-8">
+        <div className="flex flex-col space-y-2">
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex space-x-1">
+              {row.map((key, keyIndex) => (
+                <div
+                  key={keyIndex}
+                  data-key={key.key}
+                  onClick={() => handleClick(key.key)}
+                  className={`flex justify-center items-center w-12 h-12 m-1 border rounded cursor-pointer ${
+                    activeKeys.has(key.key) ? 'bg-blue-500' : ''
+                  } ${key.className ? key.className : ''}`}
+                >
+                  {key.label}
+                </div>
+              ))}
             </div>
           ))}
         </div>
-      ))}
-      <div className="flex space-x-1 mt-4">
-        {numpad.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex flex-col space-y-1">
-            {row.map((key, keyIndex) => (
+
+        <div className="flex flex-col space-y-2">
+          <div className="flex flex-col items-center space-y-1">
+            {arrowKeys.map((key, keyIndex) => (
               <div
                 key={keyIndex}
                 data-key={key.key}
                 onClick={() => handleClick(key.key)}
                 className={`flex justify-center items-center w-12 h-12 m-1 border rounded cursor-pointer ${
                   activeKeys.has(key.key) ? 'bg-blue-500' : ''
-                } ${key.className ? key.className : ''}`}
+                }`}
               >
                 {key.label}
               </div>
             ))}
           </div>
-        ))}
+
+          <div className="flex flex-col items-center space-y-1">
+            {numpad.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex space-x-1">
+                {row.map((key, keyIndex) => (
+                  <div
+                    key={keyIndex}
+                    data-key={key.key}
+                    onClick={() => handleClick(key.key)}
+                    className={`flex justify-center items-center w-12 h-12 m-1 border rounded cursor-pointer ${
+                      activeKeys.has(key.key) ? 'bg-blue-500' : ''
+                    } ${key.className ? key.className : ''}`}
+                  >
+                    {key.label}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

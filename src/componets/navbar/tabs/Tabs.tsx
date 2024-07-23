@@ -15,19 +15,19 @@ function Tabs() {
           className={`tab tab-lifted ${activeTab === 0 ? 'tab-active' : ''}`}
           onClick={() => setActiveTab(0)}
         >
-          Keyboard Tester
+          Chrome 
         </button>
         <button
           className={`tab tab-lifted ${activeTab === 1 ? 'tab-active' : ''}`}
           onClick={() => setActiveTab(1)}
         >
-          Tab 2
+          Window
         </button>
         <button
           className={`tab tab-lifted ${activeTab === 2 ? 'tab-active' : ''}`}
           onClick={() => setActiveTab(2)}
         >
-          Tab 3
+          Apple
         </button>
       </div>
       <div className="p-4 mt-4 border-t">
